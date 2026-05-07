@@ -9,14 +9,12 @@ const route = useRoute()
 
 const addGroupVisible = computed(() => route.name === 'setting' && siteStore.data.length > 0)
 const { draggableOptions, handleStart, handleEnd } = useDrag()
-
-const settingStore = useSettingStore()
 </script>
 
 <template>
   <section py-24>
     <draggable
-      class="flex flex-col gap-y-10"
+      class="flex flex-col gap-y-12"
       :list="siteStore.data[siteStore.cateIndex].groupList"
       item-key="id"
       handle=".group__handle"

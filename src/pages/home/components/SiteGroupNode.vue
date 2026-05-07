@@ -33,22 +33,33 @@ const { draggableOptions, handleStart, handleEnd } = useDrag()
 const isTopLevel = computed(() => props.groupPath.length === 1)
 const isHorizontal = computed(() => isTopLevel.value && !(isXsScreen || isFullTagMode.value))
 
-// 折叠状态（模块级共享）
-const collapsedState = reactive<Record<number, boolean>>({})
-const isCollapsed = computed(() => collapsedState[props.group.id] ?? false)
+const cateId = computed(() => siteStore.data[props.cateIndex]?.id ?? props.cateIndex)
+const groupIdRef = computed(() => props.group.id)
+const { isCollapsed, toggleCollapsed } = usePersistedGroupCollapse(cateId, groupIdRef)
+
 const hasContent = computed(() =>
   (props.group.siteList?.length || 0) > 0 || (props.group.children?.length || 0) > 0,
 )
 function toggleCollapse(e?: Event) {
   e?.stopPropagation()
   if (hasContent.value)
-    collapsedState[props.group.id] = !isCollapsed.value
+    toggleCollapsed()
 }
+
+const siteGridComponentData = computed(() => ({
+  tag: 'div',
+  type: 'transition-group',
+  class: isFullTagMode.value ? 'site-grid site-grid--full' : 'site-grid site-grid--concise',
+}))
 
 // 子分组竖线颜色
 function getLineColor(level: number) {
-  if (level === 2) return '#f5a623'
-  if (level === 3) return '#bd10e0'
+  if (level === 2)
+    return '#f5a623'
+
+  if (level === 3)
+    return '#bd10e0'
+
   return '#999999'
 }
 
@@ -67,14 +78,14 @@ function addSubGroup() {
     <!-- 顶层分组横向布局，子分组垂直布局 -->
     <div
       :class="{
-        'flex gap-x-8 items-start': isHorizontal,
+        'flex w-full min-w-0 gap-x-10 items-start': isHorizontal,
         'flex flex-col': !isHorizontal,
       }"
     >
       <!-- Group header -->
       <div
         :class="[
-          isHorizontal ? 'w-96' : 'w-full',
+          isHorizontal ? 'shrink-0 w-52 sm:w-56 md:w-60' : 'w-full',
           settingStore.isSetting ? 'cursor-pointer bg-$site-hover-c' : '',
         ]"
         shrink-0
@@ -92,7 +103,7 @@ function addSubGroup() {
             <span
               v-if="hasContent"
               class="collapse-btn"
-              text-12 cursor-pointer
+              cursor-pointer text-12
               @click.stop="toggleCollapse"
             >
               {{ isCollapsed ? '▶' : '▼' }}
@@ -123,6 +134,7 @@ function addSubGroup() {
         v-show="!isCollapsed"
         w-full
         class="sub-group-content"
+        :class="{ 'min-w-0 flex-1': isHorizontal }"
       >
         <!-- Sites -->
         <draggable
@@ -132,13 +144,7 @@ function addSubGroup() {
           group="site"
           handle=".site__handle"
           drag-class="dragging"
-          :component-data="{
-            tag: 'div',
-            type: 'transition-group',
-            class: !isFullTagMode
-              ? 'grid gap-10 grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
-              : 'grid gap-12 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4',
-          }"
+          :component-data="siteGridComponentData"
           v-bind="draggableOptions"
           @start="handleStart"
           @end="handleEnd"
@@ -157,7 +163,7 @@ function addSubGroup() {
           </template>
         </draggable>
         <!-- Children groups -->
-        <div v-if="group.children && group.children.length" class="children-wrapper flex flex-col gap-y-8 mt-8">
+        <div v-if="group.children && group.children.length" class="children-wrapper mt-6 flex flex-col gap-y-10">
           <draggable
             :list="group.children"
             item-key="id"
@@ -255,22 +261,43 @@ function addSubGroup() {
 }
 
 .sub-group-content {
-  margin-top: 8px;
-  padding-left: 24px;
+  margin-top: 6px;
+  padding-left: 20px;
 }
 .children-wrapper {
-  margin-top: 12px;
-  padding-left: 48px;
-  border-left: 3px solid var(--site-hover-c);
+  margin-top: 8px;
+  padding-left: 20px;
+  padding-bottom: 2px;
+  margin-left: 6px;
+  border-left: 2px solid var(--site-hover-c);
+}
+.site-grid {
+  display: grid;
+  width: 100%;
+  gap: 12px;
+  align-content: start;
+}
+.site-grid--concise {
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+}
+.site-grid--full {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+@media (min-width: 1024px) {
+  .site-grid--full {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
 }
 .collapse-btn {
-  opacity: 0;
+  opacity: 0.4;
   transition: opacity 0.2s;
   font-size: 10px;
   color: var(--text-c-1);
+  min-width: 1em;
+  text-align: center;
 }
 .group__handle:hover .collapse-btn {
-  opacity: 0.5;
+  opacity: 0.85;
 }
 .collapse-btn:hover {
   opacity: 1 !important;
