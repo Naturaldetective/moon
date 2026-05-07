@@ -46,11 +46,17 @@ function toggleCollapse(e?: Event) {
     toggleCollapsed()
 }
 
-const siteGridComponentData = computed(() => ({
-  tag: 'div',
-  type: 'transition-group',
-  class: isFullTagMode.value ? 'site-grid site-grid--full' : 'site-grid site-grid--concise',
-}))
+const siteGridComponentData = computed(() => {
+  const base = isFullTagMode.value ? 'site-grid site-grid--full' : 'site-grid site-grid--concise'
+  const emptyDropZone = settingStore.isSetting && !(props.group.siteList?.length)
+    ? ' site-grid--empty-drop'
+    : ''
+  return {
+    tag: 'div',
+    type: 'transition-group',
+    class: `${base}${emptyDropZone}`,
+  }
+})
 
 // 子分组竖线颜色
 function getLineColor(level: number) {
@@ -136,9 +142,9 @@ function addSubGroup() {
         class="sub-group-content"
         :class="{ 'min-w-0 flex-1': isHorizontal }"
       >
-        <!-- Sites -->
+        <!-- Sites：空列表也需挂载 draggable，否则无法作为跨列表拖放目标 -->
         <draggable
-          v-if="group.siteList && group.siteList.length"
+          v-if="group.siteList"
           :list="group.siteList"
           item-key="id"
           group="site"
@@ -287,6 +293,13 @@ function addSubGroup() {
   .site-grid--full {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
+}
+/* 设置模式下空分组：保证 Sortable 有可命中区域 */
+.site-grid--empty-drop {
+  min-height: 56px;
+  box-sizing: border-box;
+  border: 1px dashed var(--setting-border-c);
+  border-radius: 6px;
 }
 .collapse-btn {
   opacity: 0.4;
