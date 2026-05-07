@@ -122,7 +122,7 @@ function addSubGroup() {
       <div
         v-show="!isCollapsed"
         w-full
-        :class="{ 'sub-group-content': !isTopLevel }"
+        class="sub-group-content"
       >
         <!-- Sites -->
         <draggable
