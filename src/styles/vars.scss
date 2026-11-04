@@ -2,6 +2,9 @@
   --text-c: #374151;
   --text-c-1: #606060;
 
+  // 页面底色，可被背景色设置覆盖
+  --page-bg-c: var(--main-bg-c);
+
   // ------ Dark theme
   --dark-bg-c: #18181a;
   --dark-main-bg-c: #1e1e20;
@@ -12,6 +15,7 @@
 html.dark {
   --bg-c: var(--dark-bg-c) !important;
   --main-bg-c: var(--dark-main-bg-c) !important;
+  --page-bg-c: var(--dark-main-bg-c);
   --text-c: var(--dark-text-c) !important;
   --text-c-1: var(--dark-text-c-1) !important;
 }

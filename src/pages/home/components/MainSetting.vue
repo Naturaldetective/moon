@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VNode } from 'vue'
 import SettingSelection from './SettingSelection.vue'
-import type { Category, SettingItem, Settings, TagMode, Theme, WebsitePreference } from '@/types'
+import type { BackgroundColor, Category, SettingItem, Settings, TagMode, Theme, WebsitePreference } from '@/types'
 import { WITH_SERVER, getText, isEqual, loadLanguageAsync, secretIdStorage } from '@/utils'
 import * as S from '@/utils/settings'
 import { reqGetData, reqPostData } from '@/api'
@@ -15,6 +15,23 @@ function renderThemeLabel(option: SettingItem<Theme>): VNode {
   const bgColor = currentTheme.value!.bgC
   return h('div', { class: 'flex items-center gap-x-8' }, [
     h('div', { class: 'w-16 h-16 circle border-1 border-fff', style: { backgroundColor: bgColor } }),
+    h('div', getText(option.name)),
+  ])
+}
+
+/* BackgroundSetting */
+function renderBackgroundLabel(option: SettingItem<BackgroundColor>): VNode {
+  const currentBackground = S.background.children.find(item => item.key === option.key)!
+  // 浅色 / 深色双拼，方便在两种模式下都能区分
+  const { light, dark } = currentBackground.value
+  return h('div', { class: 'flex items-center gap-x-8' }, [
+    h('div', {
+      class: 'w-16 h-16 circle',
+      style: {
+        backgroundImage: `linear-gradient(135deg, ${light} 50%, ${dark} 50%)`,
+        boxShadow: 'inset 0 0 0 1px rgba(127, 127, 127, 0.35)',
+      },
+    }),
     h('div', getText(option.name)),
   ])
 }
@@ -92,6 +109,7 @@ function resetData() {
       siteStore.restoreData()
       settingStore.restoreSettings()
       toggleTheme(settingStore.settings.theme)
+      toggleBackground(settingStore.settings.background)
       loadLanguageAsync(settingStore.settings.language)
       settingStore.refreshSiteContainer()
       $message.success(t('messages.reset'))
@@ -105,6 +123,7 @@ function loadData(data: any) {
   siteStore.setData(data.data)
   settingStore.setSettings(data.settings)
   toggleTheme(data.settings.theme)
+  toggleBackground(settingStore.settings.background)
 }
 
 const secretId = ref(secretIdStorage.get())
@@ -220,6 +239,15 @@ onMounted(() => {
         :on-update-value="(theme: string) => toggleTheme(theme)"
       />
       <SettingSelection
+        v-model="settingStore.settings.background"
+        :title="S.background.name"
+        :options="S.background.children"
+        :render-label="renderBackgroundLabel"
+        label-field="name"
+        value-field="key"
+        :on-update-value="(key: string) => toggleBackground(key)"
+      />
+      <SettingSelection
         v-model="settingStore.settings.language"
         :title="S.language.name"
         :options="S.language.children"
@@ -298,6 +326,14 @@ onMounted(() => {
         label-field="name"
         value-field="key"
         :on-update-value="(key: string) => settingStore.setSettings({ showLunar: key })"
+      />
+      <SettingSelection
+        v-model="settingStore.settings.showWeather"
+        :title="S.showWeather.name"
+        :options="S.showWeather.children"
+        label-field="name"
+        value-field="key"
+        :on-update-value="(key: string) => settingStore.setSettings({ showWeather: key })"
       />
       <SettingSelection
         v-model="settingStore.settings.showFooter"

@@ -46,6 +46,12 @@ export interface Theme {
   searchBtnC: string
 }
 
+/* Background */
+export interface BackgroundColor {
+  light: string
+  dark: string
+}
+
 /* Search */
 export interface Search {
   url: string

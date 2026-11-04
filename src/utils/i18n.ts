@@ -28,6 +28,11 @@ let isFirst = true
 export async function loadLanguageAsync(lang: string): Promise<Locale> {
   if (lang.toLocaleUpperCase() === 'SYSTEM')
     lang = localesMap[navigator.language] ? navigator.language : 'en'
+  // 浏览器语言可能是 en-US、ja-JP 这类带地区的值，归一化后再取语言包，避免取不到导致应用白屏
+  if (!localesMap[lang]) {
+    const base = lang.split('-')[0]
+    lang = localesMap[base] ? base : 'en'
+  }
   // If the same language
   if (i18n.global.locale.value === lang)
     return setI18nLanguage(lang)

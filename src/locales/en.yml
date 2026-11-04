@@ -28,6 +28,14 @@ settings:
     vastOcean: Vast Ocean
     endlessDesert: Endless Desert
     moonWhite: Moon White
+  background:
+    title: Background
+    cloudWhite: Cloud White
+    warmSand: Warm Sand
+    mistGreen: Mist Green
+    mistBlue: Mist Blue
+    mistPurple: Mist Purple
+    paperPink: Paper Pink
   language:
     title: Website Language
     system: System
@@ -61,6 +69,8 @@ settings:
     title: Show Second
   showLunar:
     title: Show Lunar
+  showWeather:
+    title: Show Weather
   showFooter:
     title: Show Footer
   tagMode:
@@ -70,6 +80,18 @@ settings:
   common:
     show: Show
     hide: Hide
+search:
+  siteSection: Your Sites
+task:
+  title: Weekly Tasks
+  addToDay: Add a task to {day}
+  add: Add
+  empty: No tasks for this day — pick a date above to switch
+  history: History
+  historyDone: '{n} done'
+  historyEmpty: No history yet
+  clearHistory: Clear history
+  clearConfirm: History cannot be recovered after clearing, clear all history?
 messages:
   tip: Tip
   warnCustomize: Please set the site preference to "Customize" first

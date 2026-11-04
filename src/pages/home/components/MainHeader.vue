@@ -15,10 +15,11 @@ function getIconClass(routeName: string) {
   <div px="0 md:24 lg:48" flex items-center justify-between pt-12>
     <RouterLink to="/">
       <div text="$primary-c" flex-center>
-        <span i-cus-moonset inline-block text-32 transition-300 hover="opacity-80" />
+        <span i-cus-moonset inline-block text-32 transition-300 h-32 w-32 hover="opacity-80" />
       </div>
     </RouterLink>
     <div flex gap-x-8>
+      <RouterLink :class="getIconClass('tasks')" to="/tasks" i-carbon:task icon-btn />
       <RouterLink v-if="settingStore.isSetting" :class="getIconClass('home')" to="/" i-carbon:home icon-btn />
       <RouterLink v-else :class="getIconClass('setting')" to="/setting" i-carbon:settings icon-btn />
       <div i-carbon:moon dark:i-carbon:light icon-btn @click="(e) => toggleDark(e)" />

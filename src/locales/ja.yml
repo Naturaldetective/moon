@@ -28,6 +28,14 @@ settings:
     vastOcean: 広大な海
     endlessDesert: 果てしない砂漠
     moonWhite: 月の白
+  background:
+    title: 背景色
+    cloudWhite: クラウドホワイト
+    warmSand: ウォームサンド
+    mistGreen: ミストグリーン
+    mistBlue: ミストブルー
+    mistPurple: ミストパープル
+    paperPink: ペーパーピンク
   language:
     title: ウェブサイト言語
     system: システム
@@ -61,6 +69,8 @@ settings:
     title: 秒を表示
   showLunar:
     title: 旧暦を表示
+  showWeather:
+    title: 天気を表示
   showFooter:
     title: フッターを表示
   tagMode:
@@ -70,6 +80,18 @@ settings:
   common:
     show: 表示
     hide: 非表示
+search:
+  siteSection: サイト内リンク
+task:
+  title: 今週のタスク
+  addToDay: '{day} にタスクを追加'
+  add: 追加
+  empty: この日のタスクはありません。上の日付をクリックで切り替え
+  history: 過去のタスク
+  historyDone: '{n} 件完了'
+  historyEmpty: 過去のタスクはありません
+  clearHistory: 履歴を消去
+  clearConfirm: 消去すると復元できません。すべての履歴を消去しますか？
 messages:
   tip: ヒント
   warnCustomize: サイトの好みを「カスタマイズ」に設定してください

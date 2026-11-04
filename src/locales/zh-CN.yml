@@ -28,6 +28,14 @@ settings:
     vastOcean: 瀚海
     endlessDesert: 大漠
     moonWhite: 月白
+  background:
+    title: 背景色
+    cloudWhite: 云白
+    warmSand: 暖沙
+    mistGreen: 雾绿
+    mistBlue: 雾蓝
+    mistPurple: 雾紫
+    paperPink: 浅粉
   language:
     title: 网站语言
     system: 跟随系统
@@ -61,6 +69,8 @@ settings:
     title: 显示秒钟
   showLunar:
     title: 显示农历
+  showWeather:
+    title: 显示天气
   showFooter:
     title: 显示页脚
   tagMode:
@@ -70,6 +80,18 @@ settings:
   common:
     show: 显示
     hide: 隐藏
+search:
+  siteSection: 站内链接
+task:
+  title: 本周任务
+  addToDay: 添加到 {day}
+  add: 添加
+  empty: 这一天还没有任务，点上方日期可切换
+  history: 历史任务
+  historyDone: 完成 {n} 项
+  historyEmpty: 暂无历史任务
+  clearHistory: 清空历史
+  clearConfirm: 清空后无法恢复，确认清空全部历史任务吗？
 messages:
   tip: 提示
   warnCustomize: 请先将网站偏好设置为“自定义”
