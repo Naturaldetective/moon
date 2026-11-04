@@ -40,6 +40,38 @@ https://www.google.com/s2/favicons?domain=${domain}&sz=${size}
 ```bash
 https://0x3.com/icon?host=${domain}
 ```
+
+### 部署到 Cloudflare
+
+项目已内置 Cloudflare Workers 配置：[wrangler.jsonc](./wrangler.jsonc) 与 [worker/index.ts](./worker/index.ts)。构建产物 `dist` 作为静态资源托管（SPA 路由自动回退），`/api/*` 交给 Worker 处理，用于抓取网站图标与数据同步。
+
+```bash
+# 安装依赖并登录 Cloudflare
+pnpm install
+pnpm dlx wrangler login
+
+# 构建并发布
+pnpm deploy
+```
+
+本地联调：`pnpm cf:preview`（构建后启动本地 Worker + 静态资源服务）。
+
+在 Cloudflare 控制台连接 Git 仓库时，构建命令填 `pnpm build`，部署命令填 `npx wrangler deploy`。
+
+#### 可选：开启数据同步
+
+数据同步依赖 KV 命名空间：
+
+```bash
+pnpm dlx wrangler kv namespace create MOON_KV
+```
+
+把输出的 id 填入 `wrangler.jsonc` 的 `kv_namespaces` 后重新发布即可；未绑定 KV 时站点其余功能不受影响。
+
+#### 图标来源
+
+`wrangler.jsonc` 中的 `FAVICON_SOURCE` 支持 `google`（默认，适合海外线路）与 `0x3`（国内可访问），选定的来源取不到图标时会依次尝试备用接口，并解析站点 HTML 中的 `<link rel="icon">`。成功抓取的图标在边缘缓存 7 天；确认没有图标的站点返回 404 并短时缓存，由前端渲染首字母占位。
+
 ### 部署
 
 ```

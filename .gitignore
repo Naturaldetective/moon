@@ -16,6 +16,10 @@ dist-ssr
 coverage
 *.local
 
+# Cloudflare Workers
+.wrangler
+.dev.vars
+
 /cypress/videos/
 /cypress/screenshots/
 

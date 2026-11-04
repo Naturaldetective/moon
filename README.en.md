@@ -74,6 +74,38 @@ Install dependencies
 
 ```bash
 pnpm install
+```
+
+## Cloudflare deployment
+
+The project ships with Cloudflare Workers config: [wrangler.jsonc](./wrangler.jsonc) and [worker/index.ts](./worker/index.ts). The `dist` build output is served as static assets (SPA routes fall back to `index.html`), while `/api/*` is handled by the Worker for favicons and data sync.
+
+```bash
+# Install dependencies and log in
+pnpm install
+pnpm dlx wrangler login
+
+# Build and deploy
+pnpm deploy
+```
+
+For local development: `pnpm cf:preview` builds and then starts the local Worker with static assets.
+
+When connecting the repository in the Cloudflare dashboard, set the build command to `pnpm build` and the deploy command to `npx wrangler deploy`.
+
+#### Optional: enable data sync
+
+Data sync requires a KV namespace:
+
+```bash
+pnpm dlx wrangler kv namespace create MOON_KV
+```
+
+Put the returned id into `kv_namespaces` in `wrangler.jsonc` and deploy again. Everything else keeps working without KV bound.
+
+#### Favicon source
+
+`FAVICON_SOURCE` in `wrangler.jsonc` accepts `google` (default, works well overseas) or `0x3` (reachable from mainland China). If the selected source misses, the fallback endpoints are tried in order, followed by parsing `<link rel="icon">` from the site HTML. Successful icons are cached at the edge for 7 days; domains confirmed to have no icon return 404 and are cached briefly, so the frontend renders its initial-letter placeholder.
 
 ## Docker deployment
 

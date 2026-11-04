@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "moon-web-start",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-09-01",
+
+  // 构建产物作为静态资源托管，未命中的路径回退到 index.html（SPA 路由）
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // 这些路径交给 Worker 处理，其余直接由静态资源返回
+    "run_worker_first": ["/api/*", "/favicon/*"]
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  "vars": {
+    "FAVICON_SOURCE": "google",
+    "FAVICON_SIZE": "64"
+  }
+
+  // 数据同步功能需要 KV：先执行 `wrangler kv namespace create MOON_KV`
+  // 再把返回的 id 填入下面并在页面「设置 - 数据同步」中使用
+  // "kv_namespaces": [
+  //   { "binding": "MOON_KV", "id": "<your-kv-namespace-id>" }
+  // ]
+}

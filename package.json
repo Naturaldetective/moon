@@ -7,6 +7,9 @@
     "build": "vite build",
     "build:app": "sh ./scripts/build.sh",
     "preview": "vite preview",
+    "deploy": "pnpm build && wrangler deploy",
+    "cf:dev": "wrangler dev",
+    "cf:preview": "pnpm build && wrangler dev",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepare": "husky install",
@@ -48,7 +51,8 @@
     "unplugin-vue-components": "^0.25.2",
     "unplugin-vue-macros": "^2.6.1",
     "vite": "^4.4.11",
-    "vite-plugin-pages": "^0.29.0"
+    "vite-plugin-pages": "^0.29.0",
+    "wrangler": "^4.157.0"
   },
   "lint-staged": {
     "*": "eslint --fix"

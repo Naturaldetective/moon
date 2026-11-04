@@ -17,6 +17,12 @@ if (process.env.NODE_ENV === 'production')
 const app = new Koa()
 
 app.use(exceptionInterceptor())
+  .use(async (ctx, next) => {
+    // 前端统一使用 /api 前缀（与 Cloudflare Worker 保持一致），这里去掉前缀后再交给路由与静态目录
+    if (ctx.path.startsWith('/api/'))
+      ctx.path = ctx.path.replace(/^\/api/, '')
+    await next()
+  })
   .use(koaBody())
   .use(faviconInterceptor())
   .use(router.routes())
