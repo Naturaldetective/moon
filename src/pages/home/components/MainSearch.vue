@@ -82,12 +82,38 @@ const siteResults = computed<SiteMatch[]>(() => {
   return scored.sort((a, b) => a.score - b.score).slice(0, MAX_SITE_RESULTS).map(item => item.match)
 })
 
-function openSite(site: Site) {
-  const target = settingStore.getSettingItem('linkStrategy').value as string
-  if (target === '_self')
-    window.location.href = site.url
+const linkTarget = computed(() => settingStore.getSettingItem('linkStrategy').value as string)
+
+/* 新标签页打开：window.open 被浏览器拦截时退化为原生链接点击 */
+function openInNewTab(url: string) {
+  const win = window.open(url, '_blank')
+  if (win)
+    return
+  const link = document.createElement('a')
+  link.href = url
+  link.target = '_blank'
+  link.rel = 'noopener noreferrer'
+  link.style.display = 'none'
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+}
+
+function openUrl(url: string) {
+  if (linkTarget.value === '_self')
+    window.location.href = url
   else
-    window.open(site.url, '_blank')
+    openInNewTab(url)
+}
+
+function openSite(site: Site) {
+  openUrl(site.url)
+  closePanel()
+  searchInputRef.value?.blur()
+}
+
+/* 下拉项是原生 <a>，点击由浏览器接管，这里只负责收起面板 */
+function handleSiteItemClick() {
   closePanel()
   searchInputRef.value?.blur()
 }
@@ -101,7 +127,7 @@ function search(e?: any) {
   )
     return
   const currentSearch = searchList[curSearchIndex.value]
-  window.open(`${currentSearch.value.url}?${currentSearch.value.wd}=${encodeURIComponent(keyword.value)}`)
+  openInNewTab(`${currentSearch.value.url}?${currentSearch.value.wd}=${encodeURIComponent(keyword.value)}`)
   closePanel()
   searchInputRef.value?.blur()
 }
@@ -276,10 +302,11 @@ onUnmounted(() => {
         </div>
         <a
           v-for="(item, i) in siteResults" :key="item.site.id"
+          :href="item.site.url" :target="linkTarget" rel="noopener noreferrer"
           flex cursor-pointer items-center gap-x-8 px-12 py-7
           :class="{ 'bg-$site-hover-c': selectedIndex === i }"
           @mouseover="handleHover(i)"
-          @click="openSite(item.site)"
+          @click="handleSiteItemClick"
         >
           <img
             :src="item.site.favicon || getFaviconUrl(item.site.url)" :style="iconStyle"
